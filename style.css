@@ -1,0 +1,396 @@
+/* CSS Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    background-color: #0a0a0a;
+    color: #f5f5f5;
+}
+
+.splash-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    padding: 20px;
+}
+
+/* Header Styles */
+.auction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+
+.logo h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 1.8rem;
+    color: #f5f5f5;
+}
+
+.logo h1 i {
+    color: #d4af37;
+    margin-right: 10px;
+}
+
+.tagline {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-top: 5px;
+}
+
+.main-nav {
+    display: flex;
+    gap: 25px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #ddd;
+    font-weight: 500;
+    transition: color 0.3s;
+    font-size: 1rem;
+}
+
+.nav-link:hover {
+    color: #d4af37;
+}
+
+/* Auction Status */
+.auction-status {
+    display: flex;
+    justify-content: space-around;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+}
+
+.status-label {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+
+.status-label i {
+    margin-right: 5px;
+}
+
+.status-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f5f5f5;
+}
+
+#auction-status {
+    color: #ff5252;
+    animation: pulse 2s infinite;
+}
+
+/* Lot Information */
+.lot-info {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.lot-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    color: #f5f5f5;
+}
+
+.lot-artist {
+    font-size: 1.2rem;
+    color: #d4af37;
+    margin-bottom: 25px;
+}
+
+.lot-image-container {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto 25px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.lot-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.5s;
+}
+
+.lot-image:hover {
+    transform: scale(1.02);
+}
+
+.image-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #ff5252;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.lot-description {
+    max-width: 700px;
+    margin: 0 auto;
+    color: #ccc;
+    line-height: 1.6;
+}
+
+/* Bidding Area */
+.bidding-area {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.current-bid, .countdown, .next-bid {
+    flex: 1;
+    min-width: 250px;
+    text-align: center;
+    padding: 15px;
+}
+
+.bid-label, .countdown-label, .next-bid-label {
+    font-size: 1.1rem;
+    color: #aaa;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.bid-amount {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #f5f5f5;
+    margin-bottom: 5px;
+}
+
+.bidder-info {
+    color: #d4af37;
+    font-size: 0.9rem;
+}
+
+.countdown-timer {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #ff5252;
+    margin-bottom: 5px;
+    font-family: monospace;
+}
+
+.countdown-subtitle {
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.next-bid-amount {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #f5f5f5;
+    margin-bottom: 15px;
+}
+
+.bid-button {
+    background-color: #d4af37;
+    color: #0a0a0a;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+    max-width: 250px;
+    letter-spacing: 1px;
+}
+
+.bid-button:hover {
+    background-color: #e6c04c;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+.bid-note {
+    margin-top: 10px;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+/* Additional Info */
+.additional-info {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ccc;
+}
+
+.info-item i {
+    color: #d4af37;
+}
+
+/* Footer */
+.auction-footer {
+    text-align: center;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: auto;
+}
+
+.footer-text {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.footer-note {
+    color: #777;
+    font-size: 0.85rem;
+}
+
+.footer-note a {
+    color: #d4af37;
+    text-decoration: none;
+}
+
+.footer-note a:hover {
+    text-decoration: underline;
+}
+
+/* Animation for LIVE status */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .lot-title {
+        font-size: 1.8rem;
+    }
+    
+    .bid-amount, .countdown-timer {
+        font-size: 2.2rem;
+    }
+    
+    .next-bid-amount {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .auction-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .main-nav {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .lot-title {
+        font-size: 1.6rem;
+    }
+    
+    .bidding-area {
+        flex-direction: column;
+        gap: 25px;
+    }
+    
+    .current-bid, .countdown, .next-bid {
+        width: 100%;
+        min-width: unset;
+    }
+    
+    .additional-info {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .splash-container {
+        padding: 15px;
+    }
+    
+    .lot-title {
+        font-size: 1.4rem;
+    }
+    
+    .lot-artist {
+        font-size: 1rem;
+    }
+    
+    .auction-status {
+        padding: 10px;
+    }
+    
+    .status-item {
+        min-width: 80px;
+    }
+    
+    .status-value {
+        font-size: 1.2rem;
+    }
+    
+    .bid-amount, .countdown-timer {
+        font-size: 1.8rem;
+    }
+    
+    .bid-button {
+        padding: 12px 30px;
+    }
+}
