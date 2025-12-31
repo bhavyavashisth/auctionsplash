@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Splash Screen Container -->
@@ -20,17 +21,35 @@
                 <p class="tagline">Premium Fine Art & Collectibles</p>
             </div>
             <nav class="main-nav">
-                <a href="#" class="nav-link" id="home-link">Live Auction</a>
+                <a href="#" class="nav-link active" id="home-link">Live Auction</a>
                 <a href="about.html" class="nav-link">About</a>
                 <a href="privacy.html" class="nav-link">Privacy</a>
+                <div class="auth-buttons">
+                    <span class="user-greeting" id="user-greeting"></span>
+                    <a href="login.html" class="nav-link" id="login-link">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="login.html?register=true" class="nav-link" id="register-link">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                    <button class="nav-link logout-btn" id="logout-btn" style="display: none;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                    <a href="admin.html" class="nav-link admin-link" id="admin-link" style="display: none;">
+                        <i class="fas fa-cog"></i> Admin
+                    </a>
+                </div>
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
             </nav>
         </header>
 
-        <!-- Main Auction Display -->
+        <!-- Rest of the auction page remains the same as before -->
         <main class="auction-display">
             <!-- Auction Status Bar -->
             <div class="auction-status">
-                <div class="status-item">
+                <div class="status-item clickable" id="active-bidders-trigger">
                     <span class="status-label"><i class="fas fa-users"></i> Active Bidders</span>
                     <span class="status-value" id="active-bidders">142</span>
                 </div>
@@ -42,6 +61,10 @@
                     <span class="status-label"><i class="fas fa-clock"></i> Status</span>
                     <span class="status-value" id="auction-status">LIVE</span>
                 </div>
+                <div class="status-item clickable" id="view-bids-trigger">
+                    <span class="status-label"><i class="fas fa-money-bill-wave"></i> Total Bids</span>
+                    <span class="status-value" id="total-bids">24</span>
+                </div>
             </div>
 
             <!-- Lot Information -->
@@ -51,6 +74,11 @@
                 <div class="lot-image-container">
                     <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Modernist Landscape Oil Painting" class="lot-image" id="lot-image">
                     <div class="image-badge">LIVE NOW</div>
+                    <div class="image-zoom">
+                        <button class="zoom-btn" id="zoom-btn">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="lot-description">
                     <p id="lot-description">A striking modernist landscape in oil on canvas, showcasing the artist's signature use of color and texture. Signed and dated lower right. Provenance available upon request.</p>
@@ -63,6 +91,9 @@
                     <h3 class="bid-label">Current Bid</h3>
                     <div class="bid-amount" id="current-bid">$42,500</div>
                     <div class="bidder-info" id="bidder-info">Bidder #0872</div>
+                    <button class="view-bids-btn" id="view-bids-btn">
+                        <i class="fas fa-history"></i> View Bidding History
+                    </button>
                 </div>
 
                 <!-- Countdown Timer -->
@@ -70,14 +101,37 @@
                     <h3 class="countdown-label">Time Remaining</h3>
                     <div class="countdown-timer" id="countdown-timer">00:02:15</div>
                     <div class="countdown-subtitle">Bidding closes in</div>
+                    <div class="countdown-progress">
+                        <div class="progress-bar" id="countdown-progress"></div>
+                    </div>
                 </div>
 
-                <!-- Next Bid Button -->
-                <div class="next-bid">
-                    <h3 class="next-bid-label">Next Minimum Bid</h3>
-                    <div class="next-bid-amount" id="next-bid-amount">$43,000</div>
-                    <button class="bid-button" id="bid-button">PLACE BID</button>
-                    <div class="bid-note">Bid increments: $500</div>
+                <!-- Bid Controls -->
+                <div class="bid-controls">
+                    <h3 class="bid-controls-label">Place Your Bid</h3>
+                    <div class="bid-input-container">
+                        <div class="currency-symbol">$</div>
+                        <input type="number" class="bid-input" id="bid-input" min="43000" max="1000000" step="500" value="43000">
+                        <div class="bid-input-info">Minimum bid: $43,000</div>
+                    </div>
+                    
+                    <div class="quick-bid-buttons">
+                        <button class="quick-bid-btn" data-increment="500">+ $500</button>
+                        <button class="quick-bid-btn" data-increment="1000">+ $1,000</button>
+                        <button class="quick-bid-btn" data-increment="5000">+ $5,000</button>
+                    </div>
+                    
+                    <button class="bid-button" id="bid-button">
+                        <i class="fas fa-gavel"></i> PLACE BID
+                    </button>
+                    
+                    <div class="auto-bid-option">
+                        <input type="checkbox" id="auto-bid-checkbox">
+                        <label for="auto-bid-checkbox">Enable Auto-Bid (up to max)</label>
+                        <div class="auto-bid-input" id="auto-bid-input-container">
+                            <input type="number" id="auto-bid-max" placeholder="Max bid amount">
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -95,17 +149,157 @@
                     <i class="fas fa-map-marker-alt"></i>
                     <span>Location: <span id="lot-location">New York Gallery</span></span>
                 </div>
+                <div class="info-item">
+                    <i class="fas fa-certificate"></i>
+                    <span>Estimate: <span id="lot-estimate">$40,000 - $60,000</span></span>
+                </div>
+            </div>
+
+            <!-- Detailed Information Section -->
+            <div class="detailed-info-section">
+                <div class="section-tabs">
+                    <button class="tab-btn active" data-tab="provenance">Provenance</button>
+                    <button class="tab-btn" data-tab="condition">Condition Report</button>
+                    <button class="tab-btn" data-tab="shipping">Shipping & Fees</button>
+                    <button class="tab-btn" data-tab="similar">Similar Lots</button>
+                </div>
+                
+                <div class="tab-content active" id="provenance-tab">
+                    <h3>Provenance & Exhibition History</h3>
+                    <ul>
+                        <li>Private Collection, New York (acquired directly from the artist)</li>
+                        <li>Sotheby's, New York, May 15, 1998, lot 42</li>
+                        <li>Exhibited: "Modern Masters", Guggenheim Museum, 1975</li>
+                        <li>Literature: Vance, E., "Landscapes of Memory", 1970, illustrated p. 87</li>
+                    </ul>
+                    <p>The painting has been authenticated by the Eleanor Vance Foundation and comes with a certificate of authenticity.</p>
+                </div>
+                
+                <div class="tab-content" id="condition-tab">
+                    <h3>Condition Report</h3>
+                    <p>The painting is in excellent original condition. Inspection under UV light reveals minor inpainting to the lower left corner (approx. 2cm area). The canvas has been professionally relined. Frame shows minor wear consistent with age.</p>
+                    <p><strong>Overall Condition:</strong> Very Good</p>
+                    <p><strong>Report by:</strong> Artemis Conservation Department, October 2023</p>
+                </div>
+                
+                <div class="tab-content" id="shipping-tab">
+                    <h3>Shipping, Payment & Fees</h3>
+                    <p>Buyer's premium: 25% on the first $250,000, 20% thereafter.</p>
+                    <p>Shipping: Estimated $800-$1,200 for domestic shipping, international quotes available upon request.</p>
+                    <p>Payment: Accepted within 7 business days via wire transfer, check, or approved credit.</p>
+                </div>
+                
+                <div class="tab-content" id="similar-tab">
+                    <h3>Similar Lots in Upcoming Auctions</h3>
+                    <div class="similar-lots">
+                        <div class="similar-lot">
+                            <img src="https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Abstract Composition">
+                            <p>Abstract Composition, 1958</p>
+                            <p class="similar-estimate">Est: $35,000-$45,000</p>
+                        </div>
+                        <div class="similar-lot">
+                            <img src="https://images.unsplash.com/photo-1543857778-c4a1a569e358?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Coastal Scene">
+                            <p>Coastal Scene, 1965</p>
+                            <p class="similar-estimate">Est: $28,000-$38,000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Bidders Modal Trigger -->
+            <div class="live-bidders-section">
+                <h3><i class="fas fa-user-friends"></i> Live Bidders <span class="badge">142</span></h3>
+                <div class="bidders-preview">
+                    <div class="bidder-avatar">
+                        <i class="fas fa-user"></i>
+                        <span class="bidder-name">Bidder#0872</span>
+                    </div>
+                    <div class="bidder-avatar">
+                        <i class="fas fa-user"></i>
+                        <span class="bidder-name">ArtCollector88</span>
+                    </div>
+                    <div class="bidder-avatar">
+                        <i class="fas fa-user"></i>
+                        <span class="bidder-name">GalleryNY</span>
+                    </div>
+                    <div class="bidder-avatar">
+                        <i class="fas fa-user"></i>
+                        <span class="bidder-name">Bidder#1123</span>
+                    </div>
+                    <button class="view-all-bidders" id="view-all-bidders">
+                        View All Bidders <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
         </main>
 
         <!-- Footer -->
         <footer class="auction-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-gavel"></i> Artemis Auctions</h4>
+                    <p>Premier auction house specializing in fine art and collectibles since 1990.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <p><i class="fas fa-envelope"></i> info@artemisauctions.com</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Next Auction</h4>
+                    <p>Modern & Contemporary Art</p>
+                    <p>November 15, 2023 | 2:00 PM EST</p>
+                </div>
+            </div>
             <p class="footer-text">© 2023 Artemis Auctions. All rights reserved.</p>
             <p class="footer-note">This is a preview splash screen. <a href="#" id="enter-site">Enter main site</a></p>
         </footer>
     </div>
 
+    <!-- Modals -->
+    <div class="modal" id="bidders-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-users"></i> Active Bidders</h2>
+                <button class="modal-close" id="bidders-modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="bidders-list" id="bidders-list">
+                    <!-- Bidders will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="bids-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-history"></i> Bidding History</h2>
+                <button class="modal-close" id="bids-modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="bids-list" id="bids-list">
+                    <!-- Bids will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="zoom-modal">
+        <div class="modal-content zoom-modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-search-plus"></i> Image Zoom</h2>
+                <button class="modal-close" id="zoom-modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" 
+                     alt="Modernist Landscape Oil Painting" class="zoomed-image">
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
+    <script src="auth.js"></script>
     <script src="main.js"></script>
 </body>
 </html>

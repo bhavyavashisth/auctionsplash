@@ -1,4 +1,4 @@
-// Enhanced Auction Splash Screen JavaScript
+// Enhanced Auction Splash Screen JavaScript with Auth Integration
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     const countdownTimer = document.getElementById('countdown-timer');
@@ -31,19 +31,97 @@ document.addEventListener('DOMContentLoaded', function() {
     const bidsModalClose = document.getElementById('bids-modal-close');
     const zoomModalClose = document.getElementById('zoom-modal-close');
     
-    // Auction data (simulated - will be replaced with live data)
-    let auctionData = {
-        currentBid: 42500,
-        nextBid: 43000,
-        activeBidders: 142,
-        timeRemaining: 135, // seconds
-        totalTime: 300, // 5 minutes total
-        isLive: true,
-        bidIncrement: 500,
-        totalBids: 24,
-        bidders: [],
-        bids: []
-    };
+    // Auction data (now loaded from localStorage)
+    let auctionData = this.getAuctionData();
+    
+    // Get auction data from localStorage
+    function getAuctionData() {
+        // Try to get current live item from localStorage
+        const liveItem = localStorage.getItem('current_live_item');
+        if (liveItem) {
+            const item = JSON.parse(liveItem);
+            return {
+                currentBid: item.currentBid || item.startingPrice || 0,
+                nextBid: (item.currentBid || item.startingPrice || 0) + 500,
+                activeBidders: Math.floor(Math.random() * 100) + 50,
+                timeRemaining: this.calculateTimeRemaining(item),
+                totalTime: (item.timer || 5) * 60,
+                isLive: item.status === 'live',
+                bidIncrement: 500,
+                totalBids: item.bidCount || 0,
+                currentItem: item,
+                bidders: [],
+                bids: []
+            };
+        }
+        
+        // Default data if no live item
+        return {
+            currentBid: 42500,
+            nextBid: 43000,
+            activeBidders: 142,
+            timeRemaining: 135,
+            totalTime: 300,
+            isLive: true,
+            bidIncrement: 500,
+            totalBids: 24,
+            currentItem: null,
+            bidders: [],
+            bids: []
+        };
+    }
+    
+    // Calculate time remaining for an item
+    function calculateTimeRemaining(item) {
+        if (!item.endTime) {
+            return (item.timer || 5) * 60;
+        }
+        
+        const endTime = new Date(item.endTime);
+        const now = new Date();
+        const diffSeconds = Math.max(0, Math.floor((endTime - now) / 1000));
+        
+        return diffSeconds;
+    }
+    
+    // Update current item display
+    function updateItemDisplay() {
+        if (!auctionData.currentItem) return;
+        
+        const item = auctionData.currentItem;
+        
+        // Update DOM elements
+        document.getElementById('lot-title').textContent = item.title;
+        document.getElementById('lot-artist').textContent = item.artist;
+        document.getElementById('lot-description').textContent = item.description;
+        document.getElementById('lot-dimensions').textContent = item.dimensions || '36" × 48"';
+        document.getElementById('lot-medium').textContent = item.medium || 'Oil on Canvas';
+        document.getElementById('lot-location').textContent = 'New York Gallery';
+        
+        if (item.estimateMin && item.estimateMax) {
+            document.getElementById('lot-estimate').textContent = 
+                `$${item.estimateMin.toLocaleString()} - $${item.estimateMax.toLocaleString()}`;
+        }
+        
+        // Update image if available
+        if (item.imageUrl) {
+            const lotImage = document.getElementById('lot-image');
+            lotImage.src = item.imageUrl;
+            lotImage.alt = item.title;
+            
+            // Update zoomed image as well
+            const zoomedImage = document.querySelector('.zoomed-image');
+            if (zoomedImage) {
+                zoomedImage.src = item.imageUrl;
+                zoomedImage.alt = item.title;
+            }
+        }
+        
+        // Update current bid
+        auctionData.currentBid = item.currentBid || item.startingPrice || 0;
+        auctionData.nextBid = auctionData.currentBid + 500;
+        updateBidDisplay();
+    }
     
     // Generate initial bidders data
     function generateBidders() {
@@ -79,7 +157,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const bidderNames = ["ArtCollector88", "GalleryNY", "ModernArtFan", "VintageHunter", "EuroCollector"];
         
         auctionData.bids = [];
-        let currentBidAmount = 35000;
+        let currentBidAmount = auctionData.currentItem ? 
+            (auctionData.currentItem.startingPrice * 0.8) : 35000;
         let timeOffset = 300; // 5 minutes ago
         
         for (let i = 0; i < auctionData.totalBids; i++) {
@@ -97,8 +176,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Update current bid to match last bid
-        auctionData.currentBid = currentBidAmount;
-        auctionData.nextBid = currentBidAmount + auctionData.bidIncrement;
+        if (auctionData.bids.length > 0) {
+            auctionData.currentBid = currentBidAmount;
+            auctionData.nextBid = currentBidAmount + auctionData.bidIncrement;
+        }
     }
     
     // Initialize countdown timer
@@ -169,6 +250,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Populate bidders modal
     function populateBiddersModal() {
         const biddersList = document.getElementById('bidders-list');
+        if (!biddersList) return;
+        
         biddersList.innerHTML = '';
         
         // Sort bidders by activity (active first, then by bid count)
@@ -217,6 +300,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Populate bids modal
     function populateBidsModal() {
         const bidsList = document.getElementById('bids-list');
+        if (!bidsList) return;
+        
         bidsList.innerHTML = '';
         
         // Sort bids by amount (highest first)
@@ -244,6 +329,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Handle bid button click
     function handleBid() {
+        // Check if user is logged in
+        if (!auth.isLoggedIn()) {
+            alert('Please log in to place a bid');
+            window.location.href = 'login.html';
+            return;
+        }
+        
         if (auctionData.timeRemaining <= 0) return;
         
         const bidAmount = parseInt(bidInput.value);
@@ -259,13 +351,12 @@ document.addEventListener('DOMContentLoaded', function() {
         auctionData.totalBids++;
         
         // Add bid to history
-        const bidderNames = ["ArtCollector88", "GalleryNY", "ModernArtFan", "VintageHunter", "EuroCollector"];
-        const randomBidder = bidderNames[Math.floor(Math.random() * bidderNames.length)];
+        const bidderName = auth.currentUser ? auth.currentUser.username : 'Guest';
         
         auctionData.bids.push({
             id: auctionData.bids.length + 1,
             amount: bidAmount,
-            bidder: randomBidder,
+            bidder: bidderName,
             time: "Just now",
             isWinning: true
         });
@@ -277,6 +368,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Update display
         updateBidDisplay();
+        
+        // Save bid to localStorage
+        saveBidToStorage(bidAmount, bidderName);
         
         // Simulate bidder activity
         auctionData.activeBidders += Math.floor(Math.random() * 2);
@@ -296,6 +390,25 @@ document.addEventListener('DOMContentLoaded', function() {
             auctionData.timeRemaining = 30;
             auctionData.totalTime = Math.max(auctionData.totalTime, auctionData.timeRemaining + 10);
         }
+    }
+    
+    // Save bid to localStorage
+    function saveBidToStorage(amount, bidderName) {
+        // Get existing bids
+        const bids = JSON.parse(localStorage.getItem('auction_bids')) || [];
+        
+        // Add new bid
+        bids.push({
+            id: Date.now().toString(36),
+            itemId: auctionData.currentItem ? auctionData.currentItem.id : 'default',
+            amount: amount,
+            bidderName: bidderName,
+            timestamp: new Date().toISOString(),
+            status: 'pending'
+        });
+        
+        // Save back to localStorage
+        localStorage.setItem('auction_bids', JSON.stringify(bids));
     }
     
     // Handle quick bid buttons
@@ -343,6 +456,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             updateBidDisplay();
+            
+            // Save bid to localStorage
+            saveBidToStorage(auctionData.currentBid, randomBidder);
             
             // Flash current bid to indicate change
             currentBidElement.style.color = "#ff5252";
@@ -404,6 +520,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize
     function init() {
+        // Get auction data
+        auctionData = getAuctionData();
+        
+        // Update item display
+        updateItemDisplay();
+        
         // Generate initial data
         generateBidders();
         generateBids();
@@ -421,38 +543,43 @@ document.addEventListener('DOMContentLoaded', function() {
         setInterval(simulateExternalBid, 8000); // Every 8 seconds
         
         // Event listeners
-        bidButton.addEventListener('click', handleBid);
-        enterSiteLink.addEventListener('click', handleEnterSite);
-        homeLink.addEventListener('click', (e) => {
+        if (bidButton) bidButton.addEventListener('click', handleBid);
+        if (enterSiteLink) enterSiteLink.addEventListener('click', handleEnterSite);
+        if (homeLink) homeLink.addEventListener('click', (e) => {
             e.preventDefault();
-            // Refresh the splash page
             window.location.reload();
         });
         
         // Quick bid buttons
-        quickBidButtons.forEach(btn => {
-            btn.addEventListener('click', handleQuickBid);
-        });
+        if (quickBidButtons.length > 0) {
+            quickBidButtons.forEach(btn => {
+                btn.addEventListener('click', handleQuickBid);
+            });
+        }
         
         // Auto-bid toggle
-        autoBidCheckbox.addEventListener('change', handleAutoBidToggle);
+        if (autoBidCheckbox) {
+            autoBidCheckbox.addEventListener('change', handleAutoBidToggle);
+        }
         
         // Tab switching
-        tabButtons.forEach(btn => {
-            btn.addEventListener('click', handleTabClick);
-        });
+        if (tabButtons.length > 0) {
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', handleTabClick);
+            });
+        }
         
         // Modal triggers
-        activeBiddersTrigger.addEventListener('click', () => openModal(biddersModal));
-        viewBidsTrigger.addEventListener('click', () => openModal(bidsModal));
-        viewBidsBtn.addEventListener('click', () => openModal(bidsModal));
-        viewAllBiddersBtn.addEventListener('click', () => openModal(biddersModal));
-        zoomBtn.addEventListener('click', () => openModal(zoomModal));
+        if (activeBiddersTrigger) activeBiddersTrigger.addEventListener('click', () => openModal(biddersModal));
+        if (viewBidsTrigger) viewBidsTrigger.addEventListener('click', () => openModal(bidsModal));
+        if (viewBidsBtn) viewBidsBtn.addEventListener('click', () => openModal(bidsModal));
+        if (viewAllBiddersBtn) viewAllBiddersBtn.addEventListener('click', () => openModal(biddersModal));
+        if (zoomBtn) zoomBtn.addEventListener('click', () => openModal(zoomModal));
         
         // Modal close buttons
-        biddersModalClose.addEventListener('click', () => closeModal(biddersModal));
-        bidsModalClose.addEventListener('click', () => closeModal(bidsModal));
-        zoomModalClose.addEventListener('click', () => closeModal(zoomModal));
+        if (biddersModalClose) biddersModalClose.addEventListener('click', () => closeModal(biddersModal));
+        if (bidsModalClose) bidsModalClose.addEventListener('click', () => closeModal(bidsModal));
+        if (zoomModalClose) zoomModalClose.addEventListener('click', () => closeModal(zoomModal));
         
         // Close modal when clicking outside
         window.addEventListener('click', (e) => {
@@ -461,17 +588,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.target === zoomModal) closeModal(zoomModal);
         });
         
-        // Initialize tooltips/info
-        console.log("Enhanced auction splash screen initialized.");
-        console.log("Features:");
-        console.log("- Scrollable content with detailed lot information");
-        console.log("- Interactive bidders modal (click on active bidders count)");
-        console.log("- Bidding history modal");
-        console.log("- Image zoom functionality");
-        console.log("- Tabbed content sections");
-        console.log("- Bid input with quick bid buttons");
-        console.log("- Auto-bid option with max bid setting");
-        console.log("- Progress bar for countdown timer");
+        console.log("Enhanced auction splash screen initialized with auth integration.");
     }
     
     // Start the application

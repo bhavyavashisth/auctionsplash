@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Artemis Auctions</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .login-container {
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+        
+        .login-left {
+            flex: 1;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            color: white;
+        }
+        
+        .login-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .login-content {
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .login-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #f5f5f5;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+        
+        .login-form {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.07);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #f5f5f5;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #d4af37;
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ccc;
+        }
+        
+        .forgot-password {
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #d4af37;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .login-btn:hover {
+            background-color: #e6c04c;
+            transform: translateY(-2px);
+        }
+        
+        .register-link {
+            text-align: center;
+            color: #aaa;
+            margin-top: 20px;
+        }
+        
+        .register-link a {
+            color: #d4af37;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .form-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-tab {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .form-tab.active {
+            color: #d4af37;
+            border-bottom: 3px solid #d4af37;
+        }
+        
+        .form-content {
+            display: none;
+        }
+        
+        .form-content.active {
+            display: block;
+        }
+        
+        .role-select {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .role-option {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .role-option input[type="radio"] {
+            display: none;
+        }
+        
+        .role-option label {
+            display: block;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .role-option input[type="radio"]:checked + label {
+            border-color: #d4af37;
+            background-color: rgba(212, 175, 55, 0.1);
+            color: #d4af37;
+        }
+        
+        .back-to-home {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-to-home a {
+            color: #d4af37;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-to-home a:hover {
+            text-decoration: underline;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .message.success {
+            background-color: rgba(76, 175, 80, 0.1);
+            border: 1px solid #4CAF50;
+            color: #4CAF50;
+            display: block;
+        }
+        
+        .message.error {
+            background-color: rgba(244, 67, 54, 0.1);
+            border: 1px solid #f44336;
+            color: #f44336;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+            
+            .login-left {
+                padding: 40px 20px;
+                min-height: 300px;
+            }
+            
+            .login-right {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-left">
+            <div>
+                <h1><i class="fas fa-gavel"></i> Artemis Auctions</h1>
+                <p class="tagline">Premium Fine Art & Collectibles</p>
+                <p style="margin-top: 30px; font-size: 1.2rem; line-height: 1.6;">
+                    Join our exclusive community of art collectors and enthusiasts. 
+                    Bid on exceptional pieces from around the world.
+                </p>
+                <div style="margin-top: 40px;">
+                    <h3><i class="fas fa-star"></i> Why Join?</h3>
+                    <ul style="margin-top: 15px; list-style: none;">
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: #d4af37;"></i> Access to exclusive auctions</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: #d4af37;"></i> Real-time bidding notifications</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: #d4af37;"></i> Personalized recommendations</li>
+                        <li><i class="fas fa-check" style="color: #d4af37;"></i> Secure payment processing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="login-right">
+            <div class="login-content">
+                <div class="login-header">
+                    <h1>Welcome Back</h1>
+                    <p>Sign in to your account or create a new one</p>
+                </div>
+                
+                <div class="form-tabs">
+                    <button class="form-tab active" id="login-tab">Login</button>
+                    <button class="form-tab" id="register-tab">Register</button>
+                </div>
+                
+                <!-- Login Form -->
+                <div class="form-content active" id="login-form-content">
+                    <div class="message" id="login-message"></div>
+                    
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="login-username"><i class="fas fa-user"></i> Username or Email</label>
+                            <input type="text" id="login-username" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-password"><i class="fas fa-lock"></i> Password</label>
+                            <input type="password" id="login-password" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-options">
+                            <div class="remember-me">
+                                <input type="checkbox" id="remember-me">
+                                <label for="remember-me">Remember me</label>
+                            </div>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+                        
+                        <button type="submit" class="login-btn">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </button>
+                    </form>
+                    
+                    <div class="register-link">
+                        Don't have an account? <a href="#" id="switch-to-register">Register here</a>
+                    </div>
+                </div>
+                
+                <!-- Registration Form -->
+                <div class="form-content" id="register-form-content">
+                    <div class="message" id="register-message"></div>
+                    
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="register-username"><i class="fas fa-user"></i> Username</label>
+                            <input type="text" id="register-username" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-email"><i class="fas fa-envelope"></i> Email Address</label>
+                            <input type="email" id="register-email" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-password"><i class="fas fa-lock"></i> Password</label>
+                            <input type="password" id="register-password" class="form-control" required>
+                            <small style="color: #aaa; font-size: 0.8rem;">Password must be at least 8 characters</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-confirm-password"><i class="fas fa-lock"></i> Confirm Password</label>
+                            <input type="password" id="register-confirm-password" class="form-control" required>
+                        </div>
+                        
+                        <div class="role-select">
+                            <div class="role-option">
+                                <input type="radio" id="bidder-role" name="role" value="bidder" checked>
+                                <label for="bidder-role">
+                                    <i class="fas fa-gavel"></i><br>
+                                    Bidder
+                                </label>
+                            </div>
+                            <div class="role-option">
+                                <input type="radio" id="admin-role" name="role" value="admin">
+                                <label for="admin-role">
+                                    <i class="fas fa-cog"></i><br>
+                                    Admin
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="checkbox" id="terms-agreement" required>
+                            <label for="terms-agreement" style="display: inline;">
+                                I agree to the <a href="#" style="color: #d4af37;">Terms of Service</a> and <a href="#" style="color: #d4af37;">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="login-btn">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </button>
+                    </form>
+                    
+                    <div class="register-link">
+                        Already have an account? <a href="#" id="switch-to-login">Sign in here</a>
+                    </div>
+                </div>
+                
+                <div class="back-to-home">
+                    <a href="index.html">
+                        <i class="fas fa-arrow-left"></i> Back to Auction
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>
